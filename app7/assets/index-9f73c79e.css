@@ -1,3 +1,13 @@
+
+#left {
+        float: left;
+}
+img {
+        float: left;
+}
+#right {
+        float: left;
+}
 /* color palette from <https://github.com/vuejs/theme> */
 :root {
   --vt-c-white: #ffffff;
