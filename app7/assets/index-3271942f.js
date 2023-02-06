@@ -4964,11 +4964,23 @@ function normalizeContainer(container) {
   }
   return container;
 }
+const _sfc_main$1 = {
+  __name: "slideshow",
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("h1", null, "Slide Component");
+    };
+  }
+};
+const _hoisted_1 = /* @__PURE__ */ createBaseVNode("h1", null, "App 7", -1);
 const _sfc_main = {
   __name: "App",
   setup(__props) {
     return (_ctx, _cache) => {
-      return openBlock(), createElementBlock("h1", null, "App 7");
+      return openBlock(), createElementBlock(Fragment, null, [
+        _hoisted_1,
+        createVNode(_sfc_main$1)
+      ], 64);
     };
   }
 };
