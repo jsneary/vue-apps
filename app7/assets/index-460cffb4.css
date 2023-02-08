@@ -1,12 +1,20 @@
 
-#left {
-        float: left;
+#slides {
+        text-align: center;
+}
+#text {
+        text-align: center;
 }
 img {
-        float: left;
+        width: 50%;
+        height: auto;
 }
-#right {
-        float: left;
+h1 {
+        text-align: center;
+}
+
+h1 {
+    text-align: center;
 }
 /* color palette from <https://github.com/vuejs/theme> */
 :root {

@@ -104,6 +104,28 @@ const isSpecialBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs);
 function includeBooleanAttr(value) {
   return !!value || value === "";
 }
+const toDisplayString = (val) => {
+  return isString(val) ? val : val == null ? "" : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
+};
+const replacer = (_key, val) => {
+  if (val && val.__v_isRef) {
+    return replacer(_key, val.value);
+  } else if (isMap(val)) {
+    return {
+      [`Map(${val.size})`]: [...val.entries()].reduce((entries, [key, val2]) => {
+        entries[`${key} =>`] = val2;
+        return entries;
+      }, {})
+    };
+  } else if (isSet(val)) {
+    return {
+      [`Set(${val.size})`]: [...val.values()]
+    };
+  } else if (isObject(val) && !isArray(val) && !isPlainObject(val)) {
+    return String(val);
+  }
+  return val;
+};
 const EMPTY_OBJ = {};
 const EMPTY_ARR = [];
 const NOOP = () => {
@@ -5540,15 +5562,38 @@ function c(t2) {
 }
 requireFetchNpmBrowserify();
 const slideshow_vue_vue_type_style_index_0_lang = "";
-const _hoisted_1$1 = /* @__PURE__ */ createBaseVNode("h1", null, "Slide Component", -1);
-const _hoisted_2 = { id: "slides" };
-const _hoisted_3 = ["src"];
+const _hoisted_1$1 = { id: "slides" };
+const _hoisted_2$1 = ["src"];
+const _hoisted_3 = /* @__PURE__ */ createBaseVNode("br", null, null, -1);
+const _hoisted_4 = { id: "text" };
+const _hoisted_5 = { href: "google.com" };
 const _sfc_main$1 = {
   __name: "slideshow",
   setup(__props) {
-    const client = c("datdWmyjbsAW9pC0H6R3NH6Ysz5638gJ29hBUKY6EdFIlYiM6E4QzV2Y");
+    c("datdWmyjbsAW9pC0H6R3NH6Ysz5638gJ29hBUKY6EdFIlYiM6E4QzV2Y");
     let curImg = 0;
-    const pics = reactive({
+    let imgs = [
+      {
+        alt: "Grayscale photo of house on grass field",
+        photographer: "Suzy Hazelwood",
+        photographer_url: "https://www.pexels.com/@suzyhazelwood/",
+        url: "suzy.jpg"
+      },
+      {
+        alt: "Gray concrete house surrounded by trees",
+        photographer: "Wayne Evans",
+        photographer_url: "https://www.pexels.com/@wayne-evans-62382/",
+        url: "wayne.jpg"
+      },
+      {
+        alt: "White and brown 2 story house near tree",
+        photographer: "Mike B",
+        photographer_url: "https://www.pexels.com/@mikebirdy/",
+        url: "mike.jpg"
+      }
+    ];
+    console.log(imgs[0].alt);
+    reactive({
       media: {}
     });
     const pic = reactive({
@@ -5558,33 +5603,29 @@ const _sfc_main$1 = {
       url: ""
     });
     async function getPics() {
-      let result = await client.collections.all({ per_page: 1 });
-      const id = result.collections[0].id;
-      result = await client.collections.media({ id, type: "photos", per_page: 6 });
-      pics.media = result.media;
     }
     async function loadImage() {
       let index = curImg;
-      pic.name = pics.media[index].alt;
-      pic.photographer = pics.media[index].photographer;
-      pic.photographer_url = pics.media[index].photographer_url;
-      pic.url = pics.media[index].src.tiny;
+      pic.name = imgs[index].alt;
+      pic.photographer = imgs[index].photographer;
+      pic.photographer_url = imgs[index].photographer_url;
+      pic.url = imgs[index].url;
     }
     getPics();
     watchEffect(() => {
       console.log("test");
-      if (pics.media.length > 0) {
+      if (imgs.length > 0) {
         loadImage();
       }
     });
     const loadNext = function() {
-      if (curImg < 5) {
+      if (curImg < 2) {
         curImg++;
       }
       let left = document.getElementById("left");
       left.disabled = false;
       let right = document.getElementById("right");
-      if (curImg == 5) {
+      if (curImg == 2) {
         right.disabled = true;
       }
       loadImage();
@@ -5603,8 +5644,7 @@ const _sfc_main$1 = {
     };
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock(Fragment, null, [
-        _hoisted_1$1,
-        createBaseVNode("div", _hoisted_2, [
+        createBaseVNode("div", _hoisted_1$1, [
           createBaseVNode("button", {
             type: "button",
             id: "left",
@@ -5613,24 +5653,36 @@ const _sfc_main$1 = {
           }, "❮"),
           createBaseVNode("img", {
             src: pic.url
-          }, null, 8, _hoisted_3),
+          }, null, 8, _hoisted_2$1),
           createBaseVNode("button", {
             type: "button",
             id: "right",
             onClick: loadNext
           }, "❯")
+        ]),
+        _hoisted_3,
+        createBaseVNode("div", _hoisted_4, [
+          createBaseVNode("p", null, toDisplayString(pic.name), 1),
+          createBaseVNode("p", null, [
+            createBaseVNode("a", _hoisted_5, toDisplayString(pic.photographer), 1)
+          ])
         ])
       ], 64);
     };
   }
 };
-const _hoisted_1 = /* @__PURE__ */ createBaseVNode("h1", null, "App 7", -1);
+const App_vue_vue_type_style_index_0_lang = "";
+const _hoisted_1 = /* @__PURE__ */ createBaseVNode("p", null, [
+  /* @__PURE__ */ createBaseVNode("h1", null, "App 7")
+], -1);
+const _hoisted_2 = /* @__PURE__ */ createBaseVNode("br", null, null, -1);
 const _sfc_main = {
   __name: "App",
   setup(__props) {
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock(Fragment, null, [
         _hoisted_1,
+        _hoisted_2,
         createVNode(_sfc_main$1)
       ], 64);
     };
