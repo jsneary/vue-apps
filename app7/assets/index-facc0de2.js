@@ -5566,7 +5566,7 @@ const _hoisted_1$1 = { id: "slides" };
 const _hoisted_2$1 = ["src"];
 const _hoisted_3 = /* @__PURE__ */ createBaseVNode("br", null, null, -1);
 const _hoisted_4 = { id: "text" };
-const _hoisted_5 = { href: "google.com" };
+const _hoisted_5 = ["href"];
 const _sfc_main$1 = {
   __name: "slideshow",
   setup(__props) {
@@ -5664,7 +5664,10 @@ const _sfc_main$1 = {
         createBaseVNode("div", _hoisted_4, [
           createBaseVNode("p", null, toDisplayString(pic.name), 1),
           createBaseVNode("p", null, [
-            createBaseVNode("a", _hoisted_5, toDisplayString(pic.photographer), 1)
+            createBaseVNode("a", {
+              href: pic.photographer_url,
+              target: "_blank"
+            }, toDisplayString(pic.photographer), 9, _hoisted_5)
           ])
         ])
       ], 64);
