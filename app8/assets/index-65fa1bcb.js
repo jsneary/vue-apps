@@ -5092,7 +5092,7 @@ function normalizeContainer(container) {
   }
   return container;
 }
-const App_vue_vue_type_style_index_0_lang = "";
+const CreateAccount_vue_vue_type_style_index_0_lang = "";
 const _hoisted_1 = { class: "container" };
 const _hoisted_2 = { class: "rounded border border-primary border-2 border-opacity-25 py-3 px-5" };
 const _hoisted_3 = { class: "d-flex flex-column" };
@@ -5113,8 +5113,8 @@ const _hoisted_10 = /* @__PURE__ */ createBaseVNode("label", {
   class: "form-label"
 }, "Reenter password", -1);
 const _hoisted_11 = ["disabled"];
-const _sfc_main = {
-  __name: "App",
+const _sfc_main$1 = {
+  __name: "CreateAccount",
   setup(__props) {
     const usernameRef = ref(null);
     const username = ref("");
@@ -5214,6 +5214,19 @@ const _sfc_main = {
               }, "Create", 8, _hoisted_11)
             ])
           ])
+        ])
+      ]);
+    };
+  }
+};
+const App_vue_vue_type_style_index_0_lang = "";
+const _sfc_main = {
+  __name: "App",
+  setup(__props) {
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("main", null, [
+        createBaseVNode("div", null, [
+          createVNode(_sfc_main$1)
         ])
       ]);
     };

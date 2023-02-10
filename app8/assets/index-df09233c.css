@@ -4,3 +4,8 @@ span {
     color: red;
     vertical-align: text-top;
 }
+
+main {
+    display: flex;
+    justify-content: center;
+}
