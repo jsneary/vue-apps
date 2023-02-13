@@ -4,6 +4,12 @@ span {
     color: red;
     vertical-align: text-top;
 }
+img {
+    width: 75px;
+    height: auto;
+    float: right;
+    border-radius: 50%;
+}
 
 main {
     display: flex;

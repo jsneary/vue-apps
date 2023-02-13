@@ -1300,13 +1300,13 @@ function flushJobs(seen) {
     }
   }
 }
-function emit(instance, event, ...rawArgs) {
+function emit(instance, event2, ...rawArgs) {
   if (instance.isUnmounted)
     return;
   const props = instance.vnode.props || EMPTY_OBJ;
   let args = rawArgs;
-  const isModelListener2 = event.startsWith("update:");
-  const modelArg = isModelListener2 && event.slice(7);
+  const isModelListener2 = event2.startsWith("update:");
+  const modelArg = isModelListener2 && event2.slice(7);
   if (modelArg && modelArg in props) {
     const modifiersKey = `${modelArg === "modelValue" ? "model" : modelArg}Modifiers`;
     const { number, trim } = props[modifiersKey] || EMPTY_OBJ;
@@ -1318,10 +1318,10 @@ function emit(instance, event, ...rawArgs) {
     }
   }
   let handlerName;
-  let handler = props[handlerName = toHandlerKey(event)] || // also try camelCase event handler (#2249)
-  props[handlerName = toHandlerKey(camelize(event))];
+  let handler = props[handlerName = toHandlerKey(event2)] || // also try camelCase event handler (#2249)
+  props[handlerName = toHandlerKey(camelize(event2))];
   if (!handler && isModelListener2) {
-    handler = props[handlerName = toHandlerKey(hyphenate(event))];
+    handler = props[handlerName = toHandlerKey(hyphenate(event2))];
   }
   if (handler) {
     callWithAsyncErrorHandling(handler, instance, 6, args);
@@ -4862,11 +4862,11 @@ function patchDOMProp(el, key, value, prevChildren, parentComponent, parentSuspe
   }
   needRemove && el.removeAttribute(key);
 }
-function addEventListener(el, event, handler, options) {
-  el.addEventListener(event, handler, options);
+function addEventListener(el, event2, handler, options) {
+  el.addEventListener(event2, handler, options);
 }
-function removeEventListener(el, event, handler, options) {
-  el.removeEventListener(event, handler, options);
+function removeEventListener(el, event2, handler, options) {
+  el.removeEventListener(event2, handler, options);
 }
 function patchEvent(el, rawName, prevValue, nextValue, instance = null) {
   const invokers = el._vei || (el._vei = {});
@@ -4895,8 +4895,8 @@ function parseName(name) {
       options[m[0].toLowerCase()] = true;
     }
   }
-  const event = name[2] === ":" ? name.slice(3) : hyphenate(name.slice(2));
-  return [event, options];
+  const event2 = name[2] === ":" ? name.slice(3) : hyphenate(name.slice(2));
+  return [event2, options];
 }
 let cachedNow = 0;
 const p = /* @__PURE__ */ Promise.resolve();
@@ -5092,6 +5092,7 @@ function normalizeContainer(container) {
   }
   return container;
 }
+const _imports_0 = "/app8/profile.jpg";
 var commonjsGlobal = typeof globalThis !== "undefined" ? globalThis : typeof window !== "undefined" ? window : typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : {};
 var dist = {};
 var country_phone_data = {};
@@ -7616,43 +7617,40 @@ var validate = function(email) {
 };
 const CreateAccount_vue_vue_type_style_index_0_lang = "";
 const _hoisted_1 = { class: "container" };
-const _hoisted_2 = { class: "rounded border border-primary border-2 border-opacity-25 py-3 px-5" };
-const _hoisted_3 = { class: "d-flex flex-column" };
-const _hoisted_4 = /* @__PURE__ */ createBaseVNode("legend", null, "Create Account", -1);
-const _hoisted_5 = { class: "form-floating" };
-const _hoisted_6 = /* @__PURE__ */ createBaseVNode("label", {
+const _hoisted_2 = /* @__PURE__ */ createBaseVNode("img", {
+  src: _imports_0,
+  id: "picture"
+}, null, -1);
+const _hoisted_3 = { class: "rounded border border-primary border-2 border-opacity-25 py-3 px-5" };
+const _hoisted_4 = { class: "d-flex flex-column" };
+const _hoisted_5 = /* @__PURE__ */ createBaseVNode("legend", null, "Create Account", -1);
+const _hoisted_6 = { class: "form-floating" };
+const _hoisted_7 = /* @__PURE__ */ createBaseVNode("label", {
   for: "username",
   class: "form-label"
 }, "Username", -1);
-const _hoisted_7 = { class: "form-floating" };
-const _hoisted_8 = /* @__PURE__ */ createBaseVNode("label", {
+const _hoisted_8 = { class: "form-floating" };
+const _hoisted_9 = /* @__PURE__ */ createBaseVNode("label", {
   for: "password",
   class: "form-label"
 }, "Password", -1);
-const _hoisted_9 = { class: "form-floating" };
-const _hoisted_10 = /* @__PURE__ */ createBaseVNode("label", {
+const _hoisted_10 = { class: "form-floating" };
+const _hoisted_11 = /* @__PURE__ */ createBaseVNode("label", {
   for: "password2",
   class: "form-label"
 }, "Reenter password", -1);
-const _hoisted_11 = { class: "form-floating" };
-const _hoisted_12 = /* @__PURE__ */ createBaseVNode("label", {
+const _hoisted_12 = { class: "form-floating" };
+const _hoisted_13 = /* @__PURE__ */ createBaseVNode("label", {
   for: "email",
   class: "form-label"
 }, "Email Address", -1);
-const _hoisted_13 = { class: "form-floating" };
-const _hoisted_14 = /* @__PURE__ */ createBaseVNode("label", {
+const _hoisted_14 = { class: "form-floating" };
+const _hoisted_15 = /* @__PURE__ */ createBaseVNode("label", {
   for: "phoneNum",
   class: "form-label"
-}, "Phone (+xxx xxx-xxxx)", -1);
-const _hoisted_15 = /* @__PURE__ */ createBaseVNode("div", { class: "form-floating" }, [
-  /* @__PURE__ */ createTextVNode(" Profile Picture: "),
-  /* @__PURE__ */ createBaseVNode("input", {
-    type: "file",
-    id: "file",
-    name: "fileName"
-  })
-], -1);
-const _hoisted_16 = ["disabled"];
+}, "Phone (xxx xxx xxxx)", -1);
+const _hoisted_16 = { class: "form-floating" };
+const _hoisted_17 = ["disabled"];
 const _sfc_main$1 = {
   __name: "CreateAccount",
   setup(__props) {
@@ -7668,11 +7666,12 @@ const _sfc_main$1 = {
     const passwordErrorRef = ref(null);
     const password2ErrorRef = ref(null);
     const email = ref("");
-    const validEmail = ref("false");
+    const validEmail = ref(false);
     const emailErrorRef = ref(null);
     const phoneNum = ref("");
-    const validPhone = ref("false");
+    const validPhone = ref(false);
     const phoneErrorRef = ref(null);
+    const imageRef = ref("profile.jpg");
     watch(username, () => {
       validUsername.value = username.value.length >= 4;
       usernameErrorRef.value.innerHTML = validUsername.value ? "&nbsp;" : "Minimum length: 4 characters";
@@ -7707,12 +7706,24 @@ const _sfc_main$1 = {
     onUpdated(() => {
       console.log(usernameRef.value.value);
     });
+    function display(img) {
+      console.log(img);
+      console.log(img.value);
+      console.log(imageRef.value);
+      let read = new FileReader();
+      read.onloadend = function() {
+        let img2 = document.querySelector("#picture");
+        img2.src = read.result;
+      };
+      read.readAsDataURL(event.target.files[0]);
+    }
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock("div", _hoisted_1, [
-        createBaseVNode("form", _hoisted_2, [
-          createBaseVNode("fieldset", _hoisted_3, [
-            _hoisted_4,
-            createBaseVNode("div", _hoisted_5, [
+        _hoisted_2,
+        createBaseVNode("form", _hoisted_3, [
+          createBaseVNode("fieldset", _hoisted_4, [
+            _hoisted_5,
+            createBaseVNode("div", _hoisted_6, [
               withDirectives(createBaseVNode("input", {
                 ref_key: "usernameRef",
                 ref: usernameRef,
@@ -7723,13 +7734,13 @@ const _sfc_main$1 = {
               }, null, 512), [
                 [vModelText, username.value]
               ]),
-              _hoisted_6,
+              _hoisted_7,
               createBaseVNode("span", {
                 ref_key: "usernameErrorRef",
                 ref: usernameErrorRef
               }, " ", 512)
             ]),
-            createBaseVNode("div", _hoisted_7, [
+            createBaseVNode("div", _hoisted_8, [
               withDirectives(createBaseVNode("input", {
                 "onUpdate:modelValue": _cache[1] || (_cache[1] = ($event) => password.value = $event),
                 id: "password",
@@ -7738,13 +7749,13 @@ const _sfc_main$1 = {
               }, null, 512), [
                 [vModelText, password.value]
               ]),
-              _hoisted_8,
+              _hoisted_9,
               createBaseVNode("span", {
                 ref_key: "passwordErrorRef",
                 ref: passwordErrorRef
               }, " ", 512)
             ]),
-            createBaseVNode("div", _hoisted_9, [
+            createBaseVNode("div", _hoisted_10, [
               withDirectives(createBaseVNode("input", {
                 "onUpdate:modelValue": _cache[2] || (_cache[2] = ($event) => password2.value = $event),
                 id: "password2",
@@ -7753,13 +7764,13 @@ const _sfc_main$1 = {
               }, null, 512), [
                 [vModelText, password2.value]
               ]),
-              _hoisted_10,
+              _hoisted_11,
               createBaseVNode("span", {
                 ref_key: "password2ErrorRef",
                 ref: password2ErrorRef
               }, " ", 512)
             ]),
-            createBaseVNode("div", _hoisted_11, [
+            createBaseVNode("div", _hoisted_12, [
               withDirectives(createBaseVNode("input", {
                 "onUpdate:modelValue": _cache[3] || (_cache[3] = ($event) => email.value = $event),
                 id: "email",
@@ -7768,13 +7779,13 @@ const _sfc_main$1 = {
               }, null, 512), [
                 [vModelText, email.value]
               ]),
-              _hoisted_12,
+              _hoisted_13,
               createBaseVNode("span", {
                 ref_key: "emailErrorRef",
                 ref: emailErrorRef
               }, " ", 512)
             ]),
-            createBaseVNode("div", _hoisted_13, [
+            createBaseVNode("div", _hoisted_14, [
               withDirectives(createBaseVNode("input", {
                 "onUpdate:modelValue": _cache[4] || (_cache[4] = ($event) => phoneNum.value = $event),
                 id: "phoneNum",
@@ -7783,20 +7794,28 @@ const _sfc_main$1 = {
               }, null, 512), [
                 [vModelText, phoneNum.value]
               ]),
-              _hoisted_14,
+              _hoisted_15,
               createBaseVNode("span", {
                 ref_key: "phoneErrorRef",
                 ref: phoneErrorRef
               }, " ", 512)
             ]),
-            _hoisted_15,
+            createBaseVNode("div", _hoisted_16, [
+              createTextVNode(" Profile Picture: "),
+              createBaseVNode("input", {
+                type: "file",
+                onChange: _cache[5] || (_cache[5] = ($event) => display(this)),
+                id: "file",
+                name: "fileName"
+              }, null, 32)
+            ]),
             createBaseVNode("div", null, [
               createBaseVNode("button", {
                 onClick: submit,
                 class: "btn btn-primary",
                 type: "button",
                 disabled: disabled.value
-              }, "Create", 8, _hoisted_16)
+              }, "Create", 8, _hoisted_17)
             ])
           ])
         ])
