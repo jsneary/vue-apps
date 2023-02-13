@@ -7671,7 +7671,7 @@ const _sfc_main$1 = {
     const phoneNum = ref("");
     const validPhone = ref(false);
     const phoneErrorRef = ref(null);
-    const imageRef = ref("profile.jpg");
+    ref("profile.jpg");
     watch(username, () => {
       validUsername.value = username.value.length >= 4;
       usernameErrorRef.value.innerHTML = validUsername.value ? "&nbsp;" : "Minimum length: 4 characters";
@@ -7707,9 +7707,6 @@ const _sfc_main$1 = {
       console.log(usernameRef.value.value);
     });
     function display(img) {
-      console.log(img);
-      console.log(img.value);
-      console.log(imageRef.value);
       let read = new FileReader();
       read.onloadend = function() {
         let img2 = document.querySelector("#picture");
@@ -7804,7 +7801,7 @@ const _sfc_main$1 = {
               createTextVNode(" Profile Picture: "),
               createBaseVNode("input", {
                 type: "file",
-                onChange: _cache[5] || (_cache[5] = ($event) => display(this)),
+                onChange: _cache[5] || (_cache[5] = ($event) => display()),
                 id: "file",
                 name: "fileName"
               }, null, 32)
