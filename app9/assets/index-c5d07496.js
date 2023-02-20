@@ -104,6 +104,28 @@ const isSpecialBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs);
 function includeBooleanAttr(value) {
   return !!value || value === "";
 }
+const toDisplayString = (val) => {
+  return isString(val) ? val : val == null ? "" : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
+};
+const replacer = (_key, val) => {
+  if (val && val.__v_isRef) {
+    return replacer(_key, val.value);
+  } else if (isMap(val)) {
+    return {
+      [`Map(${val.size})`]: [...val.entries()].reduce((entries, [key, val2]) => {
+        entries[`${key} =>`] = val2;
+        return entries;
+      }, {})
+    };
+  } else if (isSet(val)) {
+    return {
+      [`Set(${val.size})`]: [...val.values()]
+    };
+  } else if (isObject(val) && !isArray(val) && !isPlainObject(val)) {
+    return String(val);
+  }
+  return val;
+};
 const EMPTY_OBJ = {};
 const EMPTY_ARR = [];
 const NOOP = () => {
@@ -172,6 +194,10 @@ const def = (obj, key, value) => {
 };
 const looseToNumber = (val) => {
   const n = parseFloat(val);
+  return isNaN(n) ? val : n;
+};
+const toNumber = (val) => {
+  const n = isString(val) ? Number(val) : NaN;
   return isNaN(n) ? val : n;
 };
 let _globalThis;
@@ -1001,17 +1027,17 @@ function markRaw(value) {
 }
 const toReactive = (value) => isObject(value) ? reactive(value) : value;
 const toReadonly = (value) => isObject(value) ? readonly(value) : value;
-function trackRefValue(ref) {
+function trackRefValue(ref2) {
   if (shouldTrack && activeEffect) {
-    ref = toRaw(ref);
+    ref2 = toRaw(ref2);
     {
-      trackEffects(ref.dep || (ref.dep = createDep()));
+      trackEffects(ref2.dep || (ref2.dep = createDep()));
     }
   }
 }
-function triggerRefValue(ref, newVal) {
-  ref = toRaw(ref);
-  const dep = ref.dep;
+function triggerRefValue(ref2, newVal) {
+  ref2 = toRaw(ref2);
+  const dep = ref2.dep;
   if (dep) {
     {
       triggerEffects(dep);
@@ -1021,8 +1047,39 @@ function triggerRefValue(ref, newVal) {
 function isRef(r) {
   return !!(r && r.__v_isRef === true);
 }
-function unref(ref) {
-  return isRef(ref) ? ref.value : ref;
+function ref(value) {
+  return createRef(value, false);
+}
+function createRef(rawValue, shallow) {
+  if (isRef(rawValue)) {
+    return rawValue;
+  }
+  return new RefImpl(rawValue, shallow);
+}
+class RefImpl {
+  constructor(value, __v_isShallow) {
+    this.__v_isShallow = __v_isShallow;
+    this.dep = void 0;
+    this.__v_isRef = true;
+    this._rawValue = __v_isShallow ? value : toRaw(value);
+    this._value = __v_isShallow ? value : toReactive(value);
+  }
+  get value() {
+    trackRefValue(this);
+    return this._value;
+  }
+  set value(newVal) {
+    const useDirectValue = this.__v_isShallow || isShallow(newVal) || isReadonly(newVal);
+    newVal = useDirectValue ? newVal : toRaw(newVal);
+    if (hasChanged(newVal, this._rawValue)) {
+      this._rawValue = newVal;
+      this._value = useDirectValue ? newVal : toReactive(newVal);
+      triggerRefValue(this);
+    }
+  }
+}
+function unref(ref2) {
+  return isRef(ref2) ? ref2.value : ref2;
 }
 const shallowUnwrapHandlers = {
   get: (target, key, receiver) => unref(Reflect.get(target, key, receiver)),
@@ -1422,6 +1479,7 @@ function renderComponentRoot(instance) {
       fallthroughAttrs = Component.props ? attrs : getFunctionalFallthrough(attrs);
     }
   } catch (err) {
+    blockStack.length = 0;
     handleError(
       err,
       instance,
@@ -1455,6 +1513,24 @@ function renderComponentRoot(instance) {
   }
   setCurrentRenderingInstance(prev);
   return result;
+}
+function filterSingleRoot(children) {
+  let singleRoot;
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    if (isVNode(child)) {
+      if (child.type !== Comment || child.children === "v-if") {
+        if (singleRoot) {
+          return;
+        } else {
+          singleRoot = child;
+        }
+      }
+    } else {
+      return;
+    }
+  }
+  return singleRoot;
 }
 const getFunctionalFallthrough = (attrs) => {
   let res;
@@ -1538,6 +1614,382 @@ function updateHOCHostEl({ vnode, parent }, el) {
   }
 }
 const isSuspense = (type) => type.__isSuspense;
+const SuspenseImpl = {
+  name: "Suspense",
+  // In order to make Suspense tree-shakable, we need to avoid importing it
+  // directly in the renderer. The renderer checks for the __isSuspense flag
+  // on a vnode's type and calls the `process` method, passing in renderer
+  // internals.
+  __isSuspense: true,
+  process(n1, n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, rendererInternals) {
+    if (n1 == null) {
+      mountSuspense(n2, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, rendererInternals);
+    } else {
+      patchSuspense(n1, n2, container, anchor, parentComponent, isSVG, slotScopeIds, optimized, rendererInternals);
+    }
+  },
+  hydrate: hydrateSuspense,
+  create: createSuspenseBoundary,
+  normalize: normalizeSuspenseChildren
+};
+const Suspense = SuspenseImpl;
+function triggerEvent(vnode, name) {
+  const eventListener = vnode.props && vnode.props[name];
+  if (isFunction(eventListener)) {
+    eventListener();
+  }
+}
+function mountSuspense(vnode, container, anchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, rendererInternals) {
+  const { p: patch, o: { createElement } } = rendererInternals;
+  const hiddenContainer = createElement("div");
+  const suspense = vnode.suspense = createSuspenseBoundary(vnode, parentSuspense, parentComponent, container, hiddenContainer, anchor, isSVG, slotScopeIds, optimized, rendererInternals);
+  patch(null, suspense.pendingBranch = vnode.ssContent, hiddenContainer, null, parentComponent, suspense, isSVG, slotScopeIds);
+  if (suspense.deps > 0) {
+    triggerEvent(vnode, "onPending");
+    triggerEvent(vnode, "onFallback");
+    patch(
+      null,
+      vnode.ssFallback,
+      container,
+      anchor,
+      parentComponent,
+      null,
+      // fallback tree will not have suspense context
+      isSVG,
+      slotScopeIds
+    );
+    setActiveBranch(suspense, vnode.ssFallback);
+  } else {
+    suspense.resolve();
+  }
+}
+function patchSuspense(n1, n2, container, anchor, parentComponent, isSVG, slotScopeIds, optimized, { p: patch, um: unmount, o: { createElement } }) {
+  const suspense = n2.suspense = n1.suspense;
+  suspense.vnode = n2;
+  n2.el = n1.el;
+  const newBranch = n2.ssContent;
+  const newFallback = n2.ssFallback;
+  const { activeBranch, pendingBranch, isInFallback, isHydrating } = suspense;
+  if (pendingBranch) {
+    suspense.pendingBranch = newBranch;
+    if (isSameVNodeType(newBranch, pendingBranch)) {
+      patch(pendingBranch, newBranch, suspense.hiddenContainer, null, parentComponent, suspense, isSVG, slotScopeIds, optimized);
+      if (suspense.deps <= 0) {
+        suspense.resolve();
+      } else if (isInFallback) {
+        patch(
+          activeBranch,
+          newFallback,
+          container,
+          anchor,
+          parentComponent,
+          null,
+          // fallback tree will not have suspense context
+          isSVG,
+          slotScopeIds,
+          optimized
+        );
+        setActiveBranch(suspense, newFallback);
+      }
+    } else {
+      suspense.pendingId++;
+      if (isHydrating) {
+        suspense.isHydrating = false;
+        suspense.activeBranch = pendingBranch;
+      } else {
+        unmount(pendingBranch, parentComponent, suspense);
+      }
+      suspense.deps = 0;
+      suspense.effects.length = 0;
+      suspense.hiddenContainer = createElement("div");
+      if (isInFallback) {
+        patch(null, newBranch, suspense.hiddenContainer, null, parentComponent, suspense, isSVG, slotScopeIds, optimized);
+        if (suspense.deps <= 0) {
+          suspense.resolve();
+        } else {
+          patch(
+            activeBranch,
+            newFallback,
+            container,
+            anchor,
+            parentComponent,
+            null,
+            // fallback tree will not have suspense context
+            isSVG,
+            slotScopeIds,
+            optimized
+          );
+          setActiveBranch(suspense, newFallback);
+        }
+      } else if (activeBranch && isSameVNodeType(newBranch, activeBranch)) {
+        patch(activeBranch, newBranch, container, anchor, parentComponent, suspense, isSVG, slotScopeIds, optimized);
+        suspense.resolve(true);
+      } else {
+        patch(null, newBranch, suspense.hiddenContainer, null, parentComponent, suspense, isSVG, slotScopeIds, optimized);
+        if (suspense.deps <= 0) {
+          suspense.resolve();
+        }
+      }
+    }
+  } else {
+    if (activeBranch && isSameVNodeType(newBranch, activeBranch)) {
+      patch(activeBranch, newBranch, container, anchor, parentComponent, suspense, isSVG, slotScopeIds, optimized);
+      setActiveBranch(suspense, newBranch);
+    } else {
+      triggerEvent(n2, "onPending");
+      suspense.pendingBranch = newBranch;
+      suspense.pendingId++;
+      patch(null, newBranch, suspense.hiddenContainer, null, parentComponent, suspense, isSVG, slotScopeIds, optimized);
+      if (suspense.deps <= 0) {
+        suspense.resolve();
+      } else {
+        const { timeout, pendingId } = suspense;
+        if (timeout > 0) {
+          setTimeout(() => {
+            if (suspense.pendingId === pendingId) {
+              suspense.fallback(newFallback);
+            }
+          }, timeout);
+        } else if (timeout === 0) {
+          suspense.fallback(newFallback);
+        }
+      }
+    }
+  }
+}
+function createSuspenseBoundary(vnode, parent, parentComponent, container, hiddenContainer, anchor, isSVG, slotScopeIds, optimized, rendererInternals, isHydrating = false) {
+  const { p: patch, m: move, um: unmount, n: next, o: { parentNode, remove: remove2 } } = rendererInternals;
+  const timeout = vnode.props ? toNumber(vnode.props.timeout) : void 0;
+  const suspense = {
+    vnode,
+    parent,
+    parentComponent,
+    isSVG,
+    container,
+    hiddenContainer,
+    anchor,
+    deps: 0,
+    pendingId: 0,
+    timeout: typeof timeout === "number" ? timeout : -1,
+    activeBranch: null,
+    pendingBranch: null,
+    isInFallback: true,
+    isHydrating,
+    isUnmounted: false,
+    effects: [],
+    resolve(resume = false) {
+      const { vnode: vnode2, activeBranch, pendingBranch, pendingId, effects, parentComponent: parentComponent2, container: container2 } = suspense;
+      if (suspense.isHydrating) {
+        suspense.isHydrating = false;
+      } else if (!resume) {
+        const delayEnter = activeBranch && pendingBranch.transition && pendingBranch.transition.mode === "out-in";
+        if (delayEnter) {
+          activeBranch.transition.afterLeave = () => {
+            if (pendingId === suspense.pendingId) {
+              move(
+                pendingBranch,
+                container2,
+                anchor2,
+                0
+                /* MoveType.ENTER */
+              );
+            }
+          };
+        }
+        let { anchor: anchor2 } = suspense;
+        if (activeBranch) {
+          anchor2 = next(activeBranch);
+          unmount(activeBranch, parentComponent2, suspense, true);
+        }
+        if (!delayEnter) {
+          move(
+            pendingBranch,
+            container2,
+            anchor2,
+            0
+            /* MoveType.ENTER */
+          );
+        }
+      }
+      setActiveBranch(suspense, pendingBranch);
+      suspense.pendingBranch = null;
+      suspense.isInFallback = false;
+      let parent2 = suspense.parent;
+      let hasUnresolvedAncestor = false;
+      while (parent2) {
+        if (parent2.pendingBranch) {
+          parent2.effects.push(...effects);
+          hasUnresolvedAncestor = true;
+          break;
+        }
+        parent2 = parent2.parent;
+      }
+      if (!hasUnresolvedAncestor) {
+        queuePostFlushCb(effects);
+      }
+      suspense.effects = [];
+      triggerEvent(vnode2, "onResolve");
+    },
+    fallback(fallbackVNode) {
+      if (!suspense.pendingBranch) {
+        return;
+      }
+      const { vnode: vnode2, activeBranch, parentComponent: parentComponent2, container: container2, isSVG: isSVG2 } = suspense;
+      triggerEvent(vnode2, "onFallback");
+      const anchor2 = next(activeBranch);
+      const mountFallback = () => {
+        if (!suspense.isInFallback) {
+          return;
+        }
+        patch(
+          null,
+          fallbackVNode,
+          container2,
+          anchor2,
+          parentComponent2,
+          null,
+          // fallback tree will not have suspense context
+          isSVG2,
+          slotScopeIds,
+          optimized
+        );
+        setActiveBranch(suspense, fallbackVNode);
+      };
+      const delayEnter = fallbackVNode.transition && fallbackVNode.transition.mode === "out-in";
+      if (delayEnter) {
+        activeBranch.transition.afterLeave = mountFallback;
+      }
+      suspense.isInFallback = true;
+      unmount(
+        activeBranch,
+        parentComponent2,
+        null,
+        // no suspense so unmount hooks fire now
+        true
+        // shouldRemove
+      );
+      if (!delayEnter) {
+        mountFallback();
+      }
+    },
+    move(container2, anchor2, type) {
+      suspense.activeBranch && move(suspense.activeBranch, container2, anchor2, type);
+      suspense.container = container2;
+    },
+    next() {
+      return suspense.activeBranch && next(suspense.activeBranch);
+    },
+    registerDep(instance, setupRenderEffect) {
+      const isInPendingSuspense = !!suspense.pendingBranch;
+      if (isInPendingSuspense) {
+        suspense.deps++;
+      }
+      const hydratedEl = instance.vnode.el;
+      instance.asyncDep.catch((err) => {
+        handleError(
+          err,
+          instance,
+          0
+          /* ErrorCodes.SETUP_FUNCTION */
+        );
+      }).then((asyncSetupResult) => {
+        if (instance.isUnmounted || suspense.isUnmounted || suspense.pendingId !== instance.suspenseId) {
+          return;
+        }
+        instance.asyncResolved = true;
+        const { vnode: vnode2 } = instance;
+        handleSetupResult(instance, asyncSetupResult, false);
+        if (hydratedEl) {
+          vnode2.el = hydratedEl;
+        }
+        const placeholder = !hydratedEl && instance.subTree.el;
+        setupRenderEffect(
+          instance,
+          vnode2,
+          // component may have been moved before resolve.
+          // if this is not a hydration, instance.subTree will be the comment
+          // placeholder.
+          parentNode(hydratedEl || instance.subTree.el),
+          // anchor will not be used if this is hydration, so only need to
+          // consider the comment placeholder case.
+          hydratedEl ? null : next(instance.subTree),
+          suspense,
+          isSVG,
+          optimized
+        );
+        if (placeholder) {
+          remove2(placeholder);
+        }
+        updateHOCHostEl(instance, vnode2.el);
+        if (isInPendingSuspense && --suspense.deps === 0) {
+          suspense.resolve();
+        }
+      });
+    },
+    unmount(parentSuspense, doRemove) {
+      suspense.isUnmounted = true;
+      if (suspense.activeBranch) {
+        unmount(suspense.activeBranch, parentComponent, parentSuspense, doRemove);
+      }
+      if (suspense.pendingBranch) {
+        unmount(suspense.pendingBranch, parentComponent, parentSuspense, doRemove);
+      }
+    }
+  };
+  return suspense;
+}
+function hydrateSuspense(node, vnode, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized, rendererInternals, hydrateNode) {
+  const suspense = vnode.suspense = createSuspenseBoundary(
+    vnode,
+    parentSuspense,
+    parentComponent,
+    node.parentNode,
+    document.createElement("div"),
+    null,
+    isSVG,
+    slotScopeIds,
+    optimized,
+    rendererInternals,
+    true
+    /* hydrating */
+  );
+  const result = hydrateNode(node, suspense.pendingBranch = vnode.ssContent, parentComponent, suspense, slotScopeIds, optimized);
+  if (suspense.deps === 0) {
+    suspense.resolve();
+  }
+  return result;
+}
+function normalizeSuspenseChildren(vnode) {
+  const { shapeFlag, children } = vnode;
+  const isSlotChildren = shapeFlag & 32;
+  vnode.ssContent = normalizeSuspenseSlot(isSlotChildren ? children.default : children);
+  vnode.ssFallback = isSlotChildren ? normalizeSuspenseSlot(children.fallback) : createVNode(Comment);
+}
+function normalizeSuspenseSlot(s) {
+  let block;
+  if (isFunction(s)) {
+    const trackBlock = isBlockTreeEnabled && s._c;
+    if (trackBlock) {
+      s._d = false;
+      openBlock();
+    }
+    s = s();
+    if (trackBlock) {
+      s._d = true;
+      block = currentBlock;
+      closeBlock();
+    }
+  }
+  if (isArray(s)) {
+    const singleChild = filterSingleRoot(s);
+    s = singleChild;
+  }
+  s = normalizeVNode(s);
+  if (block && !s.dynamicChildren) {
+    s.dynamicChildren = block.filter((c) => c !== s);
+  }
+  return s;
+}
 function queueEffectWithSuspense(fn, suspense) {
   if (suspense && suspense.pendingBranch) {
     if (isArray(fn)) {
@@ -1547,6 +1999,15 @@ function queueEffectWithSuspense(fn, suspense) {
     }
   } else {
     queuePostFlushCb(fn);
+  }
+}
+function setActiveBranch(suspense, branch) {
+  suspense.activeBranch = branch;
+  const { vnode, parentComponent } = suspense;
+  const el = vnode.el = branch.el;
+  if (parentComponent && parentComponent.subTree === vnode) {
+    parentComponent.vnode.el = el;
+    updateHOCHostEl(parentComponent, el);
   }
 }
 function provide(key, value) {
@@ -2183,6 +2644,38 @@ function invokeDirectiveHook(vnode, prevVNode, instance, name) {
   }
 }
 const NULL_DYNAMIC_COMPONENT = Symbol();
+function renderList(source, renderItem, cache, index) {
+  let ret;
+  const cached = cache && cache[index];
+  if (isArray(source) || isString(source)) {
+    ret = new Array(source.length);
+    for (let i = 0, l = source.length; i < l; i++) {
+      ret[i] = renderItem(source[i], i, void 0, cached && cached[i]);
+    }
+  } else if (typeof source === "number") {
+    ret = new Array(source);
+    for (let i = 0; i < source; i++) {
+      ret[i] = renderItem(i + 1, i, void 0, cached && cached[i]);
+    }
+  } else if (isObject(source)) {
+    if (source[Symbol.iterator]) {
+      ret = Array.from(source, (item, i) => renderItem(item, i, void 0, cached && cached[i]));
+    } else {
+      const keys = Object.keys(source);
+      ret = new Array(keys.length);
+      for (let i = 0, l = keys.length; i < l; i++) {
+        const key = keys[i];
+        ret[i] = renderItem(source[key], key, i, cached && cached[i]);
+      }
+    }
+  } else {
+    ret = [];
+  }
+  if (cache) {
+    cache[index] = ret;
+  }
+  return ret;
+}
 const getPublicInstance = (i) => {
   if (!i)
     return null;
@@ -3102,11 +3595,11 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
   }
   const refValue = vnode.shapeFlag & 4 ? getExposeProxy(vnode.component) || vnode.component.proxy : vnode.el;
   const value = isUnmount ? null : refValue;
-  const { i: owner, r: ref } = rawRef;
+  const { i: owner, r: ref2 } = rawRef;
   const oldRef = oldRawRef && oldRawRef.r;
   const refs = owner.refs === EMPTY_OBJ ? owner.refs = {} : owner.refs;
   const setupState = owner.setupState;
-  if (oldRef != null && oldRef !== ref) {
+  if (oldRef != null && oldRef !== ref2) {
     if (isString(oldRef)) {
       refs[oldRef] = null;
       if (hasOwn(setupState, oldRef)) {
@@ -3116,40 +3609,40 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
       oldRef.value = null;
     }
   }
-  if (isFunction(ref)) {
-    callWithErrorHandling(ref, owner, 12, [value, refs]);
+  if (isFunction(ref2)) {
+    callWithErrorHandling(ref2, owner, 12, [value, refs]);
   } else {
-    const _isString = isString(ref);
-    const _isRef = isRef(ref);
+    const _isString = isString(ref2);
+    const _isRef = isRef(ref2);
     if (_isString || _isRef) {
       const doSet = () => {
         if (rawRef.f) {
-          const existing = _isString ? hasOwn(setupState, ref) ? setupState[ref] : refs[ref] : ref.value;
+          const existing = _isString ? hasOwn(setupState, ref2) ? setupState[ref2] : refs[ref2] : ref2.value;
           if (isUnmount) {
             isArray(existing) && remove(existing, refValue);
           } else {
             if (!isArray(existing)) {
               if (_isString) {
-                refs[ref] = [refValue];
-                if (hasOwn(setupState, ref)) {
-                  setupState[ref] = refs[ref];
+                refs[ref2] = [refValue];
+                if (hasOwn(setupState, ref2)) {
+                  setupState[ref2] = refs[ref2];
                 }
               } else {
-                ref.value = [refValue];
+                ref2.value = [refValue];
                 if (rawRef.k)
-                  refs[rawRef.k] = ref.value;
+                  refs[rawRef.k] = ref2.value;
               }
             } else if (!existing.includes(refValue)) {
               existing.push(refValue);
             }
           }
         } else if (_isString) {
-          refs[ref] = value;
-          if (hasOwn(setupState, ref)) {
-            setupState[ref] = value;
+          refs[ref2] = value;
+          if (hasOwn(setupState, ref2)) {
+            setupState[ref2] = value;
           }
         } else if (_isRef) {
-          ref.value = value;
+          ref2.value = value;
           if (rawRef.k)
             refs[rawRef.k] = value;
         } else
@@ -3185,7 +3678,7 @@ function baseCreateRenderer(options, createHydrationFns) {
       optimized = false;
       n2.dynamicChildren = null;
     }
-    const { type, ref, shapeFlag } = n2;
+    const { type, ref: ref2, shapeFlag } = n2;
     switch (type) {
       case Text:
         processText(n1, n2, container, anchor);
@@ -3213,8 +3706,8 @@ function baseCreateRenderer(options, createHydrationFns) {
         } else
           ;
     }
-    if (ref != null && parentComponent) {
-      setRef(ref, n1 && n1.ref, parentSuspense, n2 || n1, !n2);
+    if (ref2 != null && parentComponent) {
+      setRef(ref2, n1 && n1.ref, parentSuspense, n2 || n1, !n2);
     }
   };
   const processText = (n1, n2, container, anchor) => {
@@ -3847,9 +4340,9 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
   };
   const unmount = (vnode, parentComponent, parentSuspense, doRemove = false, optimized = false) => {
-    const { type, props, ref, children, dynamicChildren, shapeFlag, patchFlag, dirs } = vnode;
-    if (ref != null) {
-      setRef(ref, null, parentSuspense, vnode, true);
+    const { type, props, ref: ref2, children, dynamicChildren, shapeFlag, patchFlag, dirs } = vnode;
+    if (ref2 != null) {
+      setRef(ref2, null, parentSuspense, vnode, true);
     }
     if (shapeFlag & 256) {
       parentComponent.ctx.deactivate(vnode);
@@ -4070,10 +4563,49 @@ const Fragment = Symbol(void 0);
 const Text = Symbol(void 0);
 const Comment = Symbol(void 0);
 const Static = Symbol(void 0);
+const blockStack = [];
 let currentBlock = null;
+function openBlock(disableTracking = false) {
+  blockStack.push(currentBlock = disableTracking ? null : []);
+}
+function closeBlock() {
+  blockStack.pop();
+  currentBlock = blockStack[blockStack.length - 1] || null;
+}
 let isBlockTreeEnabled = 1;
 function setBlockTracking(value) {
   isBlockTreeEnabled += value;
+}
+function setupBlock(vnode) {
+  vnode.dynamicChildren = isBlockTreeEnabled > 0 ? currentBlock || EMPTY_ARR : null;
+  closeBlock();
+  if (isBlockTreeEnabled > 0 && currentBlock) {
+    currentBlock.push(vnode);
+  }
+  return vnode;
+}
+function createElementBlock(type, props, children, patchFlag, dynamicProps, shapeFlag) {
+  return setupBlock(createBaseVNode(
+    type,
+    props,
+    children,
+    patchFlag,
+    dynamicProps,
+    shapeFlag,
+    true
+    /* isBlock */
+  ));
+}
+function createBlock(type, props, children, patchFlag, dynamicProps) {
+  return setupBlock(createVNode(
+    type,
+    props,
+    children,
+    patchFlag,
+    dynamicProps,
+    true
+    /* isBlock: prevent a block from tracking itself */
+  ));
 }
 function isVNode(value) {
   return value ? value.__v_isVNode === true : false;
@@ -4083,8 +4615,8 @@ function isSameVNodeType(n1, n2) {
 }
 const InternalObjectKey = `__vInternal`;
 const normalizeKey = ({ key }) => key != null ? key : null;
-const normalizeRef = ({ ref, ref_key, ref_for }) => {
-  return ref != null ? isString(ref) || isRef(ref) || isFunction(ref) ? { i: currentRenderingInstance, r: ref, k: ref_key, f: !!ref_for } : ref : null;
+const normalizeRef = ({ ref: ref2, ref_key, ref_for }) => {
+  return ref2 != null ? isString(ref2) || isRef(ref2) || isFunction(ref2) ? { i: currentRenderingInstance, r: ref2, k: ref_key, f: !!ref_for } : ref2 : null;
 };
 function createBaseVNode(type, props = null, children = null, patchFlag = 0, dynamicProps = null, shapeFlag = type === Fragment ? 0 : 1, isBlockNode = false, needFullChildrenNormalization = false) {
   const vnode = {
@@ -4186,7 +4718,7 @@ function guardReactiveProps(props) {
   return isProxy(props) || InternalObjectKey in props ? extend({}, props) : props;
 }
 function cloneVNode(vnode, extraProps, mergeRef = false) {
-  const { props, ref, patchFlag, children } = vnode;
+  const { props, ref: ref2, patchFlag, children } = vnode;
   const mergedProps = extraProps ? mergeProps(props || {}, extraProps) : props;
   const cloned = {
     __v_isVNode: true,
@@ -4198,8 +4730,8 @@ function cloneVNode(vnode, extraProps, mergeRef = false) {
       // #2078 in the case of <component :is="vnode" ref="extra"/>
       // if the vnode itself already has a ref, cloneVNode will need to merge
       // the refs so the single vnode can be set on multiple refs
-      mergeRef && ref ? isArray(ref) ? ref.concat(normalizeRef(extraProps)) : [ref, normalizeRef(extraProps)] : normalizeRef(extraProps)
-    ) : ref,
+      mergeRef && ref2 ? isArray(ref2) ? ref2.concat(normalizeRef(extraProps)) : [ref2, normalizeRef(extraProps)] : normalizeRef(extraProps)
+    ) : ref2,
     scopeId: vnode.scopeId,
     slotScopeIds: vnode.slotScopeIds,
     children,
@@ -4558,6 +5090,18 @@ function isClassComponent(value) {
 const computed = (getterOrOptions, debugOptions) => {
   return computed$1(getterOrOptions, debugOptions, isInSSRComponentSetup);
 };
+function withAsyncContext(getAwaitable) {
+  const ctx = getCurrentInstance();
+  let awaitable = getAwaitable();
+  unsetCurrentInstance();
+  if (isPromise(awaitable)) {
+    awaitable = awaitable.catch((e) => {
+      setCurrentInstance(ctx);
+      throw e;
+    });
+  }
+  return [awaitable, () => setCurrentInstance(ctx)];
+}
 const ssrContextKey = Symbol(``);
 const useSSRContext = () => {
   {
@@ -4935,17 +5479,77 @@ function normalizeContainer(container) {
   }
   return container;
 }
-const _export_sfc = (sfc, props) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props) {
-    target[key] = val;
+const listItem_vue_vue_type_style_index_0_lang = "";
+const _sfc_main$1 = {
+  __name: "listItem",
+  props: {
+    file: String
+  },
+  async setup(__props) {
+    let __temp, __restore;
+    const props = __props;
+    const sound = ref(null);
+    const title = ref("title");
+    const duration = ref("0:00");
+    let metaData = ([__temp, __restore] = withAsyncContext(() => getJson(props.file)), __temp = await __temp, __restore(), __temp);
+    async function getJson(filePath) {
+      let json = {};
+      let reply = await fetch(filePath);
+      if (reply.status == 200) {
+        json = await reply.json();
+      }
+      return json;
+    }
+    onMounted(() => {
+      sound.value.src = new URL(metaData.path, import.meta.url);
+      title.value = metaData.title;
+      duration.value = metaData.duration;
+    });
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock(Fragment, null, [
+        createBaseVNode("div", null, toDisplayString(title.value) + " (" + toDisplayString(duration.value) + ")", 1),
+        createBaseVNode("audio", {
+          ref_key: "sound",
+          ref: sound,
+          controls: ""
+        }, null, 512)
+      ], 64);
+    };
   }
-  return target;
 };
-const _sfc_main = {};
-function _sfc_render(_ctx, _cache) {
-  return null;
-}
-const App = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+const _hoisted_1 = /* @__PURE__ */ createBaseVNode("h1", null, "Thunder Sounds", -1);
+const _hoisted_2 = { link: "" };
+const _sfc_main = {
+  __name: "App",
+  setup(__props) {
+    const metaDataFiles = {
+      "file1": "../src/assets/json/thunder0.json",
+      "file2": "../src/assets/json/thunder1.json",
+      "file3": "../src/assets/json/thunder2.json",
+      "file4": "../src/assets/json/thunder3.json",
+      "file5": "../src/assets/json/thunder4.json",
+      "file6": "../src/assets/json/thunder5.json",
+      "file7": "../src/assets/json/thunder6.json",
+      "file8": "../src/assets/json/thunder7.json",
+      "file9": "../src/assets/json/thunder8.json",
+      "file10": "../src/assets/json/thunder9.json"
+    };
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock(Fragment, null, [
+        _hoisted_1,
+        (openBlock(), createBlock(Suspense, null, {
+          default: withCtx(() => [
+            (openBlock(), createElementBlock(Fragment, null, renderList(metaDataFiles, (file) => {
+              return createBaseVNode("div", _hoisted_2, [
+                createVNode(_sfc_main$1, { file }, null, 8, ["file"])
+              ]);
+            }), 64))
+          ]),
+          _: 1
+        }))
+      ], 64);
+    };
+  }
+};
 const main = "";
-createApp(App).mount("#app");
+createApp(_sfc_main).mount("#app");
