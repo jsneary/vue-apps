@@ -5500,52 +5500,52 @@ const _sfc_main$1 = {
 const file0 = {
   title: "Epic Thunder No Loops",
   duration: "3:50",
-  path: "../assets/audio/thunder0.mp3"
+  path: "./assets/audio/thunder0.mp3"
 };
 const file1 = {
   title: "Epic Storm Thunder Rain Wind Waves No Loops",
   duration: "2:35",
-  path: "../assets/audio/thunder1.mp3"
+  path: "./assets/audio/thunder1.mp3"
 };
 const file2 = {
   title: "Natural Thunder",
   duration: "1:08",
-  path: "../assets/audio/thunder2.mp3"
+  path: "./assets/audio/thunder2.mp3"
 };
 const file3 = {
   title: "Rain and Thunder",
   duration: "3:00",
-  path: "../assets/audio/thunder3.mp3"
+  path: "./assets/audio/thunder3.mp3"
 };
 const file4 = {
   title: "Rain and Thunder Nature Sounds",
   duration: "0:58",
-  path: "../assets/audio/thunder4.mp3"
+  path: "./assets/audio/thunder4.mp3"
 };
 const file5 = {
   title: "Rain and Thunder SFX",
   duration: "1:03",
-  path: "../assets/audio/thunder5.mp3"
+  path: "./assets/audio/thunder5.mp3"
 };
 const file6 = {
   title: "Thunder",
   duration: "0:24",
-  path: "../assets/audio/thunder6.mp3"
+  path: "./assets/audio/thunder6.mp3"
 };
 const file7 = {
   title: "Thunder",
   duration: "0:11",
-  path: "../assets/audio/thunder7.mp3"
+  path: "./assets/audio/thunder7.mp3"
 };
 const file8 = {
   title: "Thunder and Beginning of Rainfall",
   duration: "0:32",
-  path: "../assets/audio/thunder8.mp3"
+  path: "./assets/audio/thunder8.mp3"
 };
 const file9 = {
   title: "Thunderstorm",
   duration: "2:01",
-  path: "../assets/audio/thunder9.mp3"
+  path: "./assets/audio/thunder9.mp3"
 };
 const thunder = {
   file0,
