@@ -5090,18 +5090,6 @@ function isClassComponent(value) {
 const computed = (getterOrOptions, debugOptions) => {
   return computed$1(getterOrOptions, debugOptions, isInSSRComponentSetup);
 };
-function withAsyncContext(getAwaitable) {
-  const ctx = getCurrentInstance();
-  let awaitable = getAwaitable();
-  unsetCurrentInstance();
-  if (isPromise(awaitable)) {
-    awaitable = awaitable.catch((e) => {
-      setCurrentInstance(ctx);
-      throw e;
-    });
-  }
-  return [awaitable, () => setCurrentInstance(ctx)];
-}
 const ssrContextKey = Symbol(``);
 const useSSRContext = () => {
   {
@@ -5480,71 +5468,112 @@ function normalizeContainer(container) {
   return container;
 }
 const listItem_vue_vue_type_style_index_0_lang = "";
+const _hoisted_1$1 = { id: "item" };
 const _sfc_main$1 = {
   __name: "listItem",
   props: {
     file: String
   },
-  async setup(__props) {
-    let __temp, __restore;
+  setup(__props) {
     const props = __props;
     const sound = ref(null);
     const title = ref("title");
     const duration = ref("0:00");
     console.log(props.file);
-    let metaData = ([__temp, __restore] = withAsyncContext(() => getJson(props.file)), __temp = await __temp, __restore(), __temp);
-    async function getJson(filePath) {
-      let json = {};
-      let reply = await fetch(filePath);
-      if (reply.status == 200) {
-        json = await reply.json();
-      }
-      return json;
-    }
     onMounted(() => {
-      sound.value.src = new URL(metaData.path, import.meta.url);
-      title.value = metaData.title;
-      duration.value = metaData.duration;
+      sound.value.src = new URL(props.file.path, import.meta.url);
+      title.value = props.file.title;
+      duration.value = props.file.duration;
     });
     return (_ctx, _cache) => {
-      return openBlock(), createElementBlock(Fragment, null, [
+      return openBlock(), createElementBlock("div", _hoisted_1$1, [
         createBaseVNode("div", null, toDisplayString(title.value) + " (" + toDisplayString(duration.value) + ")", 1),
         createBaseVNode("audio", {
           ref_key: "sound",
           ref: sound,
           controls: ""
         }, null, 512)
-      ], 64);
+      ]);
     };
   }
+};
+const file0 = {
+  title: "Epic Thunder No Loops",
+  duration: "3:50",
+  path: "../assets/audio/thunder0.mp3"
+};
+const file1 = {
+  title: "Epic Storm Thunder Rain Wind Waves No Loops",
+  duration: "2:35",
+  path: "../assets/audio/thunder1.mp3"
+};
+const file2 = {
+  title: "Natural Thunder",
+  duration: "1:08",
+  path: "../assets/audio/thunder2.mp3"
+};
+const file3 = {
+  title: "Rain and Thunder",
+  duration: "3:00",
+  path: "../assets/audio/thunder3.mp3"
+};
+const file4 = {
+  title: "Rain and Thunder Nature Sounds",
+  duration: "0:58",
+  path: "../assets/audio/thunder4.mp3"
+};
+const file5 = {
+  title: "Rain and Thunder SFX",
+  duration: "1:03",
+  path: "../assets/audio/thunder5.mp3"
+};
+const file6 = {
+  title: "Thunder",
+  duration: "0:24",
+  path: "../assets/audio/thunder6.mp3"
+};
+const file7 = {
+  title: "Thunder",
+  duration: "0:11",
+  path: "../assets/audio/thunder7.mp3"
+};
+const file8 = {
+  title: "Thunder and Beginning of Rainfall",
+  duration: "0:32",
+  path: "../assets/audio/thunder8.mp3"
+};
+const file9 = {
+  title: "Thunderstorm",
+  duration: "2:01",
+  path: "../assets/audio/thunder9.mp3"
+};
+const thunder = {
+  file0,
+  file1,
+  file2,
+  file3,
+  file4,
+  file5,
+  file6,
+  file7,
+  file8,
+  file9
 };
 const _hoisted_1 = /* @__PURE__ */ createBaseVNode("h1", null, "Thunder Sounds", -1);
 const _hoisted_2 = { link: "" };
 const _sfc_main = {
   __name: "App",
   setup(__props) {
-    const metaDataFiles = {
-      "file1": "./assets/json/thunder0.json",
-      "file2": "./assets/json/thunder1.json",
-      "file3": "./assets/json/thunder2.json",
-      "file4": "./assets/json/thunder3.json",
-      "file5": "./assets/json/thunder4.json",
-      "file6": "./assets/json/thunder5.json",
-      "file7": "./assets/json/thunder6.json",
-      "file8": "./assets/json/thunder7.json",
-      "file9": "./assets/json/thunder8.json",
-      "file10": "/assets/json/thunder9.json"
-    };
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock(Fragment, null, [
         _hoisted_1,
         (openBlock(), createBlock(Suspense, null, {
           default: withCtx(() => [
-            (openBlock(), createElementBlock(Fragment, null, renderList(metaDataFiles, (file) => {
-              return createBaseVNode("div", _hoisted_2, [
+            (openBlock(true), createElementBlock(Fragment, null, renderList(unref(thunder), (file) => {
+              return openBlock(), createElementBlock("div", _hoisted_2, [
                 createVNode(_sfc_main$1, { file }, null, 8, ["file"])
               ]);
-            }), 64))
+            }), 256))
           ]),
           _: 1
         }))
