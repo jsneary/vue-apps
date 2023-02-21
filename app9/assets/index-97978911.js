@@ -5491,6 +5491,7 @@ const _sfc_main$1 = {
     const sound = ref(null);
     const title = ref("title");
     const duration = ref("0:00");
+    console.log(props.file);
     let metaData = ([__temp, __restore] = withAsyncContext(() => getJson(props.file)), __temp = await __temp, __restore(), __temp);
     async function getJson(filePath) {
       let json = {};
@@ -5523,16 +5524,16 @@ const _sfc_main = {
   __name: "App",
   setup(__props) {
     const metaDataFiles = {
-      "file1": "../src/assets/json/thunder0.json",
-      "file2": "../src/assets/json/thunder1.json",
-      "file3": "../src/assets/json/thunder2.json",
-      "file4": "../src/assets/json/thunder3.json",
-      "file5": "../src/assets/json/thunder4.json",
-      "file6": "../src/assets/json/thunder5.json",
-      "file7": "../src/assets/json/thunder6.json",
-      "file8": "../src/assets/json/thunder7.json",
-      "file9": "../src/assets/json/thunder8.json",
-      "file10": "../src/assets/json/thunder9.json"
+      "file1": "./assets/json/thunder0.json",
+      "file2": "./assets/json/thunder1.json",
+      "file3": "./assets/json/thunder2.json",
+      "file4": "./assets/json/thunder3.json",
+      "file5": "./assets/json/thunder4.json",
+      "file6": "./assets/json/thunder5.json",
+      "file7": "./assets/json/thunder6.json",
+      "file8": "./assets/json/thunder7.json",
+      "file9": "./assets/json/thunder8.json",
+      "file10": "/assets/json/thunder9.json"
     };
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock(Fragment, null, [
