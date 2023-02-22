@@ -5477,7 +5477,7 @@ const __vite_glob_0_6 = "/app9/assets/thunder6-33f4cd78.mp3";
 const __vite_glob_0_7 = "/app9/assets/thunder7-50c22a0d.mp3";
 const __vite_glob_0_8 = "/app9/assets/thunder8-8d9814d1.mp3";
 const __vite_glob_0_9 = "/app9/assets/thunder9-54b49521.mp3";
-const __vite_glob_0_10 = "data:application/json;base64,ew0KImZpbGUwIjp7DQogICAgInRpdGxlIjoiRXBpYyBUaHVuZGVyIE5vIExvb3BzIiwNCiAgICAiZHVyYXRpb24iOiIzOjUwIiwNCiAgICAicGF0aCI6InRodW5kZXIwLm1wMyINCn0sDQoiZmlsZTEiOnsNCiAgICAidGl0bGUiOiJFcGljIFN0b3JtIFRodW5kZXIgUmFpbiBXaW5kIFdhdmVzIE5vIExvb3BzIiwNCiAgICAiZHVyYXRpb24iOiIyOjM1IiwNCiAgICAicGF0aCI6Ii4uL2Fzc2V0cy9hdWRpby90aHVuZGVyMS5tcDMiDQp9LA0KImZpbGUyIjp7DQogICAgInRpdGxlIjoiTmF0dXJhbCBUaHVuZGVyIiwNCiAgICAiZHVyYXRpb24iOiIxOjA4IiwNCiAgICAicGF0aCI6Ii4uL2Fzc2V0cy9hdWRpby90aHVuZGVyMi5tcDMiDQp9LA0KImZpbGUzIjp7DQogICAgInRpdGxlIjoiUmFpbiBhbmQgVGh1bmRlciIsDQogICAgImR1cmF0aW9uIjoiMzowMCIsDQogICAgInBhdGgiOiIuLi9hc3NldHMvYXVkaW8vdGh1bmRlcjMubXAzIg0KfSwNCiJmaWxlNCI6ew0KICAgICJ0aXRsZSI6IlJhaW4gYW5kIFRodW5kZXIgTmF0dXJlIFNvdW5kcyIsDQogICAgImR1cmF0aW9uIjoiMDo1OCIsDQogICAgInBhdGgiOiIuLi9hc3NldHMvYXVkaW8vdGh1bmRlcjQubXAzIg0KfSwNCiJmaWxlNSI6ew0KICAgICJ0aXRsZSI6IlJhaW4gYW5kIFRodW5kZXIgU0ZYIiwNCiAgICAiZHVyYXRpb24iOiIxOjAzIiwNCiAgICAicGF0aCI6Ii4uL2Fzc2V0cy9hdWRpby90aHVuZGVyNS5tcDMiDQp9LA0KImZpbGU2Ijp7DQogICAgInRpdGxlIjoiVGh1bmRlciIsDQogICAgImR1cmF0aW9uIjoiMDoyNCIsDQogICAgInBhdGgiOiIuLi9hc3NldHMvYXVkaW8vdGh1bmRlcjYubXAzIg0KfSwNCiJmaWxlNyI6ew0KICAgICJ0aXRsZSI6IlRodW5kZXIiLA0KICAgICJkdXJhdGlvbiI6IjA6MTEiLA0KICAgICJwYXRoIjoiLi4vYXNzZXRzL2F1ZGlvL3RodW5kZXI3Lm1wMyINCn0sDQoiZmlsZTgiOnsNCiAgICAidGl0bGUiOiJUaHVuZGVyIGFuZCBCZWdpbm5pbmcgb2YgUmFpbmZhbGwiLA0KICAgICJkdXJhdGlvbiI6IjA6MzIiLA0KICAgICJwYXRoIjoiLi4vYXNzZXRzL2F1ZGlvL3RodW5kZXI4Lm1wMyINCn0sDQoiZmlsZTkiOnsNCiAgICAidGl0bGUiOiJUaHVuZGVyc3Rvcm0iLA0KICAgICJkdXJhdGlvbiI6IjI6MDEiLA0KICAgICJwYXRoIjoiLi4vYXNzZXRzL2F1ZGlvL3RodW5kZXI5Lm1wMyINCn0NCn0=";
+const __vite_glob_0_10 = "data:application/json;base64,ew0KImZpbGUwIjp7DQogICAgInRpdGxlIjoiRXBpYyBUaHVuZGVyIE5vIExvb3BzIiwNCiAgICAiZHVyYXRpb24iOiIzOjUwIiwNCiAgICAicGF0aCI6InRodW5kZXIwLm1wMyINCn0sDQoiZmlsZTEiOnsNCiAgICAidGl0bGUiOiJFcGljIFN0b3JtIFRodW5kZXIgUmFpbiBXaW5kIFdhdmVzIE5vIExvb3BzIiwNCiAgICAiZHVyYXRpb24iOiIyOjM1IiwNCiAgICAicGF0aCI6InRodW5kZXIxLm1wMyINCn0sDQoiZmlsZTIiOnsNCiAgICAidGl0bGUiOiJOYXR1cmFsIFRodW5kZXIiLA0KICAgICJkdXJhdGlvbiI6IjE6MDgiLA0KICAgICJwYXRoIjoidGh1bmRlcjIubXAzIg0KfSwNCiJmaWxlMyI6ew0KICAgICJ0aXRsZSI6IlJhaW4gYW5kIFRodW5kZXIiLA0KICAgICJkdXJhdGlvbiI6IjM6MDAiLA0KICAgICJwYXRoIjoidGh1bmRlcjMubXAzIg0KfSwNCiJmaWxlNCI6ew0KICAgICJ0aXRsZSI6IlJhaW4gYW5kIFRodW5kZXIgTmF0dXJlIFNvdW5kcyIsDQogICAgImR1cmF0aW9uIjoiMDo1OCIsDQogICAgInBhdGgiOiJ0aHVuZGVyNC5tcDMiDQp9LA0KImZpbGU1Ijp7DQogICAgInRpdGxlIjoiUmFpbiBhbmQgVGh1bmRlciBTRlgiLA0KICAgICJkdXJhdGlvbiI6IjE6MDMiLA0KICAgICJwYXRoIjoidGh1bmRlcjUubXAzIg0KfSwNCiJmaWxlNiI6ew0KICAgICJ0aXRsZSI6IlRodW5kZXIiLA0KICAgICJkdXJhdGlvbiI6IjA6MjQiLA0KICAgICJwYXRoIjoidGh1bmRlcjYubXAzIg0KfSwNCiJmaWxlNyI6ew0KICAgICJ0aXRsZSI6IlRodW5kZXIiLA0KICAgICJkdXJhdGlvbiI6IjA6MTEiLA0KICAgICJwYXRoIjoidGh1bmRlcjcubXAzIg0KfSwNCiJmaWxlOCI6ew0KICAgICJ0aXRsZSI6IlRodW5kZXIgYW5kIEJlZ2lubmluZyBvZiBSYWluZmFsbCIsDQogICAgImR1cmF0aW9uIjoiMDozMiIsDQogICAgInBhdGgiOiJ0aHVuZGVyOC5tcDMiDQp9LA0KImZpbGU5Ijp7DQogICAgInRpdGxlIjoiVGh1bmRlcnN0b3JtIiwNCiAgICAiZHVyYXRpb24iOiIyOjAxIiwNCiAgICAicGF0aCI6InRodW5kZXI5Lm1wMyINCn0NCn0=";
 const __vite_glob_0_11 = "data:application/json;base64,ew0KICAgICJ0aXRsZSI6IkVwaWMgVGh1bmRlciBObyBMb29wcyIsDQogICAgImR1cmF0aW9uIjoiMzo1MCIsDQogICAgInBhdGgiOiIuLi9hc3NldHMvYXVkaW8vdGh1bmRlcjAubXAzIg0KfQ==";
 const __vite_glob_0_12 = "data:application/json;base64,ew0KICAgICJ0aXRsZSI6IkVwaWMgU3Rvcm0gVGh1bmRlciBSYWluIFdpbmQgV2F2ZXMgTm8gTG9vcHMiLA0KICAgICJkdXJhdGlvbiI6IjI6MzUiLA0KICAgICJwYXRoIjoiLi4vYXNzZXRzL2F1ZGlvL3RodW5kZXIxLm1wMyINCn0=";
 const __vite_glob_0_13 = "data:application/json;base64,ew0KICAgICJ0aXRsZSI6Ik5hdHVyYWwgVGh1bmRlciIsDQogICAgImR1cmF0aW9uIjoiMTowOCIsDQogICAgInBhdGgiOiIuLi9hc3NldHMvYXVkaW8vdGh1bmRlcjIubXAzIg0KfQ==";
@@ -5537,47 +5537,47 @@ const file0 = {
 const file1 = {
   title: "Epic Storm Thunder Rain Wind Waves No Loops",
   duration: "2:35",
-  path: "../assets/audio/thunder1.mp3"
+  path: "thunder1.mp3"
 };
 const file2 = {
   title: "Natural Thunder",
   duration: "1:08",
-  path: "../assets/audio/thunder2.mp3"
+  path: "thunder2.mp3"
 };
 const file3 = {
   title: "Rain and Thunder",
   duration: "3:00",
-  path: "../assets/audio/thunder3.mp3"
+  path: "thunder3.mp3"
 };
 const file4 = {
   title: "Rain and Thunder Nature Sounds",
   duration: "0:58",
-  path: "../assets/audio/thunder4.mp3"
+  path: "thunder4.mp3"
 };
 const file5 = {
   title: "Rain and Thunder SFX",
   duration: "1:03",
-  path: "../assets/audio/thunder5.mp3"
+  path: "thunder5.mp3"
 };
 const file6 = {
   title: "Thunder",
   duration: "0:24",
-  path: "../assets/audio/thunder6.mp3"
+  path: "thunder6.mp3"
 };
 const file7 = {
   title: "Thunder",
   duration: "0:11",
-  path: "../assets/audio/thunder7.mp3"
+  path: "thunder7.mp3"
 };
 const file8 = {
   title: "Thunder and Beginning of Rainfall",
   duration: "0:32",
-  path: "../assets/audio/thunder8.mp3"
+  path: "thunder8.mp3"
 };
 const file9 = {
   title: "Thunderstorm",
   duration: "2:01",
-  path: "../assets/audio/thunder9.mp3"
+  path: "thunder9.mp3"
 };
 const thunder = {
   file0,
