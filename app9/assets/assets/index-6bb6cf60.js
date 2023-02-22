@@ -5500,7 +5500,7 @@ const _sfc_main$1 = {
 const file0 = {
   title: "Epic Thunder No Loops",
   duration: "3:50",
-  path: "../assets/audio/thunder0.mp3"
+  path: "thunder0.mp3"
 };
 const file1 = {
   title: "Epic Storm Thunder Rain Wind Waves No Loops",
