@@ -5165,6 +5165,7 @@ const _sfc_main = {
   setup(__props) {
     let cards = reactive([]);
     function addCard(arg1, arg2) {
+      console.log(arg1);
       cards.push({
         firstName: arg1,
         lastName: arg2
