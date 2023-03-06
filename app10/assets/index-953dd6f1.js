@@ -5170,6 +5170,7 @@ const _sfc_main = {
         firstName: arg1,
         lastName: arg2
       });
+      console.log(cards);
     }
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock(Fragment, null, [
