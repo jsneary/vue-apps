@@ -5172,6 +5172,9 @@ const _sfc_main = {
       });
       console.log(cards);
     }
+    watch(cards, (cards2) => {
+      console.log(cards2);
+    });
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock(Fragment, null, [
         _hoisted_1,
