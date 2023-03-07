@@ -104,6 +104,28 @@ const isSpecialBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs);
 function includeBooleanAttr(value) {
   return !!value || value === "";
 }
+const toDisplayString = (val) => {
+  return isString(val) ? val : val == null ? "" : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
+};
+const replacer = (_key, val) => {
+  if (val && val.__v_isRef) {
+    return replacer(_key, val.value);
+  } else if (isMap(val)) {
+    return {
+      [`Map(${val.size})`]: [...val.entries()].reduce((entries, [key, val2]) => {
+        entries[`${key} =>`] = val2;
+        return entries;
+      }, {})
+    };
+  } else if (isSet(val)) {
+    return {
+      [`Set(${val.size})`]: [...val.values()]
+    };
+  } else if (isObject(val) && !isArray(val) && !isPlainObject(val)) {
+    return String(val);
+  }
+  return val;
+};
 const EMPTY_OBJ = {};
 const EMPTY_ARR = [];
 const NOOP = () => {
@@ -5135,11 +5157,34 @@ function normalizeContainer(container) {
   }
   return container;
 }
-const card_vue_vue_type_style_index_0_lang = "";
-const submit_vue_vue_type_style_index_0_lang = "";
+const Card_vue_vue_type_style_index_0_lang = "";
+const _hoisted_1$2 = { class: "container" };
+const _sfc_main$2 = {
+  __name: "Card",
+  props: ["card"],
+  setup(__props) {
+    const props = __props;
+    const first = ref("first");
+    const last = ref("last");
+    console.log("card");
+    onMounted(() => {
+      console.log("on mounted");
+      console.log(props.card);
+      first.value = props.card.firstName;
+      last.value = props.card.lastName;
+    });
+    return (_ctx, _cache) => {
+      return openBlock(), createElementBlock("div", _hoisted_1$2, [
+        createBaseVNode("div", null, toDisplayString(first.value), 1),
+        createBaseVNode("div", null, toDisplayString(last.value), 1)
+      ]);
+    };
+  }
+};
+const Submit_vue_vue_type_style_index_0_lang = "";
 const _hoisted_1$1 = { id: "container" };
 const _sfc_main$1 = {
-  __name: "submit",
+  __name: "Submit",
   setup(__props) {
     const first = ref(null);
     const last = ref(null);
@@ -5170,7 +5215,6 @@ const _sfc_main$1 = {
   }
 };
 const _hoisted_1 = /* @__PURE__ */ createBaseVNode("h1", null, "App 10", -1);
-const _hoisted_2 = { id: "container" };
 const _sfc_main = {
   __name: "App",
   setup(__props) {
@@ -5190,9 +5234,9 @@ const _sfc_main = {
       return openBlock(), createElementBlock(Fragment, null, [
         _hoisted_1,
         createVNode(_sfc_main$1, { onAddCard: addCard }),
-        createBaseVNode("div", _hoisted_2, [
+        createBaseVNode("div", null, [
           (openBlock(true), createElementBlock(Fragment, null, renderList(unref(cards), (card) => {
-            return openBlock(), createBlock(card, { card }, null, 8, ["card"]);
+            return openBlock(), createBlock(_sfc_main$2, { card }, null, 8, ["card"]);
           }), 256))
         ])
       ], 64);
