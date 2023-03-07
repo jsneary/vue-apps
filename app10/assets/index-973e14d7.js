@@ -4198,6 +4198,17 @@ function createElementBlock(type, props, children, patchFlag, dynamicProps, shap
     /* isBlock */
   ));
 }
+function createBlock(type, props, children, patchFlag, dynamicProps) {
+  return setupBlock(createVNode(
+    type,
+    props,
+    children,
+    patchFlag,
+    dynamicProps,
+    true
+    /* isBlock: prevent a block from tracking itself */
+  ));
+}
 function isVNode(value) {
   return value ? value.__v_isVNode === true : false;
 }
@@ -5159,7 +5170,7 @@ const _sfc_main$1 = {
   }
 };
 const _hoisted_1 = /* @__PURE__ */ createBaseVNode("h1", null, "App 10", -1);
-const _hoisted_2 = { link: "" };
+const _hoisted_2 = { id: "container" };
 const _sfc_main = {
   __name: "App",
   setup(__props) {
@@ -5179,11 +5190,11 @@ const _sfc_main = {
       return openBlock(), createElementBlock(Fragment, null, [
         _hoisted_1,
         createVNode(_sfc_main$1, { onAddCard: addCard }),
-        (openBlock(true), createElementBlock(Fragment, null, renderList(unref(cards), (card) => {
-          return openBlock(), createElementBlock("div", _hoisted_2, [
-            createVNode(card, { card }, null, 8, ["card"])
-          ]);
-        }), 256))
+        createBaseVNode("div", _hoisted_2, [
+          (openBlock(true), createElementBlock(Fragment, null, renderList(unref(cards), (card) => {
+            return openBlock(), createBlock(card, { card }, null, 8, ["card"]);
+          }), 256))
+        ])
       ], 64);
     };
   }
