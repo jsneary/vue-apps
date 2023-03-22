@@ -1,0 +1,38 @@
+
+.left {
+        justify-self: left;
+        margin: 3px 3px 3px 10px;
+}
+.right {
+        float: right;
+        margin: 3px 10px 3px 3px;
+}
+
+main {
+    margin-top: 40px;
+}
+
+.left {
+        justify-self: left;
+        margin: 3px 3px 3px 10px;
+}
+.right {
+        float: right;
+        margin: 3px 10px 3px 3px;
+}
+
+div[data-v-ea5bfd22] {
+        text-align: right;
+        font-size: 25pt;
+}
+
+main {
+        margin-top: 40px;
+}
+img {
+        width: 50%;
+        height: auto;
+}
+#id {
+        margin-right: 10px;
+}
