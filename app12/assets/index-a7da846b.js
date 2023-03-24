@@ -5333,6 +5333,65 @@ function normalizeContainer(container) {
   }
   return container;
 }
+const _export_sfc = (sfc, props) => {
+  const target = sfc.__vccOpts || sfc;
+  for (const [key, val] of props) {
+    target[key] = val;
+  }
+  return target;
+};
+const _sfc_main$5 = {};
+function _sfc_render(_ctx, _cache) {
+  const _component_RouterView = resolveComponent("RouterView");
+  return openBlock(), createElementBlock("main", null, [
+    createVNode(_component_RouterView)
+  ]);
+}
+const App = /* @__PURE__ */ _export_sfc(_sfc_main$5, [["render", _sfc_render]]);
+const scriptRel = "modulepreload";
+const assetsURL = function(dep) {
+  return "/app12/" + dep;
+};
+const seen = {};
+const __vitePreload = function preload(baseModule, deps, importerUrl) {
+  if (!deps || deps.length === 0) {
+    return baseModule();
+  }
+  const links = document.getElementsByTagName("link");
+  return Promise.all(deps.map((dep) => {
+    dep = assetsURL(dep);
+    if (dep in seen)
+      return;
+    seen[dep] = true;
+    const isCss = dep.endsWith(".css");
+    const cssSelector = isCss ? '[rel="stylesheet"]' : "";
+    const isBaseRelative = !!importerUrl;
+    if (isBaseRelative) {
+      for (let i = links.length - 1; i >= 0; i--) {
+        const link2 = links[i];
+        if (link2.href === dep && (!isCss || link2.rel === "stylesheet")) {
+          return;
+        }
+      }
+    } else if (document.querySelector(`link[href="${dep}"]${cssSelector}`)) {
+      return;
+    }
+    const link = document.createElement("link");
+    link.rel = isCss ? "stylesheet" : scriptRel;
+    if (!isCss) {
+      link.as = "script";
+      link.crossOrigin = "";
+    }
+    link.href = dep;
+    document.head.appendChild(link);
+    if (isCss) {
+      return new Promise((res, rej) => {
+        link.addEventListener("load", res);
+        link.addEventListener("error", () => rej(new Error(`Unable to preload CSS for ${dep}`)));
+      });
+    }
+  })).then(() => baseModule());
+};
 /*!
   * vue-router v4.1.6
   * (c) 2022 Eduardo San Martin Morote
@@ -7117,7 +7176,7 @@ function extractChangingRecords(to, from) {
   return [leavingRecords, updatingRecords, enteringRecords];
 }
 const Nav_vue_vue_type_style_index_0_lang = "";
-const _sfc_main$5 = {
+const _sfc_main$4 = {
   __name: "Nav",
   setup(__props) {
     return (_ctx, _cache) => {
@@ -7144,61 +7203,6 @@ const _sfc_main$5 = {
     };
   }
 };
-const _sfc_main$4 = {
-  __name: "App",
-  setup(__props) {
-    return (_ctx, _cache) => {
-      const _component_RouterView = resolveComponent("RouterView");
-      return openBlock(), createElementBlock("main", null, [
-        createVNode(_component_RouterView)
-      ]);
-    };
-  }
-};
-const scriptRel = "modulepreload";
-const assetsURL = function(dep) {
-  return "/app2/" + dep;
-};
-const seen = {};
-const __vitePreload = function preload(baseModule, deps, importerUrl) {
-  if (!deps || deps.length === 0) {
-    return baseModule();
-  }
-  const links = document.getElementsByTagName("link");
-  return Promise.all(deps.map((dep) => {
-    dep = assetsURL(dep);
-    if (dep in seen)
-      return;
-    seen[dep] = true;
-    const isCss = dep.endsWith(".css");
-    const cssSelector = isCss ? '[rel="stylesheet"]' : "";
-    const isBaseRelative = !!importerUrl;
-    if (isBaseRelative) {
-      for (let i = links.length - 1; i >= 0; i--) {
-        const link2 = links[i];
-        if (link2.href === dep && (!isCss || link2.rel === "stylesheet")) {
-          return;
-        }
-      }
-    } else if (document.querySelector(`link[href="${dep}"]${cssSelector}`)) {
-      return;
-    }
-    const link = document.createElement("link");
-    link.rel = isCss ? "stylesheet" : scriptRel;
-    if (!isCss) {
-      link.as = "script";
-      link.crossOrigin = "";
-    }
-    link.href = dep;
-    document.head.appendChild(link);
-    if (isCss) {
-      return new Promise((res, rej) => {
-        link.addEventListener("load", res);
-        link.addEventListener("error", () => rej(new Error(`Unable to preload CSS for ${dep}`)));
-      });
-    }
-  })).then(() => baseModule());
-};
 const HomeView_vue_vue_type_style_index_0_lang = "";
 const _hoisted_1$2 = /* @__PURE__ */ createBaseVNode("main", null, " homeView ", -1);
 const _sfc_main$3 = {
@@ -7206,16 +7210,16 @@ const _sfc_main$3 = {
   setup(__props) {
     return (_ctx, _cache) => {
       return openBlock(), createElementBlock(Fragment, null, [
-        createVNode(_sfc_main$5),
+        createVNode(_sfc_main$4),
         _hoisted_1$2
       ], 64);
     };
   }
 };
-const _imports_0 = "/app2/assets/bird-280a685d.jpg";
-const _imports_1 = "/app2/assets/dog-a4fcb73a.jpg";
-const _imports_2 = "/app2/assets/cat-59ec9bf1.jpg";
-const _imports_3 = "/app2/assets/fish-28a34280.jpg";
+const _imports_0 = "/app12/assets/bird-280a685d.jpg";
+const _imports_1 = "/app12/assets/dog-a4fcb73a.jpg";
+const _imports_2 = "/app12/assets/cat-59ec9bf1.jpg";
+const _imports_3 = "/app12/assets/fish-28a34280.jpg";
 const Nav2_vue_vue_type_style_index_0_lang = "";
 const _sfc_main$2 = {
   __name: "Nav2",
@@ -7271,13 +7275,6 @@ const list = {
   file3
 };
 const List_vue_vue_type_style_index_0_scoped_ea5bfd22_lang = "";
-const _export_sfc = (sfc, props) => {
-  const target = sfc.__vccOpts || sfc;
-  for (const [key, val] of props) {
-    target[key] = val;
-  }
-  return target;
-};
 const _hoisted_1$1 = { link: "" };
 const _sfc_main$1 = {
   __name: "List",
@@ -7359,7 +7356,7 @@ const _sfc_main = {
   }
 };
 const router = createRouter({
-  history: createWebHistory("/app2/"),
+  history: createWebHistory("/app12/"),
   routes: [
     {
       path: "/",
@@ -7377,12 +7374,12 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => __vitePreload(() => import("./AboutView-4e4c818a.js"), true ? [] : void 0)
+      component: () => __vitePreload(() => import("./AboutView-864dfda2.js"), true ? [] : void 0)
     }
   ]
 });
 const main = "";
-const app = createApp(_sfc_main$4);
+const app = createApp(App);
 app.use(router);
 app.mount("#app");
 export {
