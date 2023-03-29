@@ -1,0 +1,36 @@
+
+#a { 
+        grid-area: a; 
+        background-color: blue;
+}
+#b { 
+        grid-area: b;
+        background-color: pink;
+}
+#c { 
+        grid-area: c;
+        background-color: orange;
+}
+#d { 
+        grid-area: d;
+        background-color: red;
+}
+#e { 
+        grid-area: e;
+        background-color: purple;
+}
+#f { 
+        grid-area: f;
+        background-color: green;
+}
+main {
+        width: 100%;
+        display: grid;
+        grid-template-areas:
+            'a a a'
+            'b c c'
+            'd d e'
+            'f f f';
+        grid-template-rows: auto 1fr 1fr auto;
+        height: calc(100vh - 15px);
+}
