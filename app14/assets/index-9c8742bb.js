@@ -6649,7 +6649,7 @@ const router = createRouter({
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
-      component: () => __vitePreload(() => import("./AboutView-9c23e232.js"), true ? ["assets/AboutView-9c23e232.js","assets/AboutView-fe0787ef.css"] : void 0)
+      component: () => __vitePreload(() => import("./AboutView-8dc0b43d.js"), true ? ["assets/AboutView-8dc0b43d.js","assets/AboutView-fe0787ef.css"] : void 0)
     }
   ]
 });
