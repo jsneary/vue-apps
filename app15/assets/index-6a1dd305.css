@@ -22,7 +22,7 @@
     transform: translateY(-20px)
 }
 #imgDiv {
-    background-image: url("0.webp");
+    background-image: url("/app15/assets/0-109e1c22.webp");
     height: 20%;
     background-size: contain;
     background-repeat: no-repeat;
